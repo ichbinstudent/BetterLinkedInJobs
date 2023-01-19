@@ -1,3 +1,3 @@
-# BetterLinkedInJobs
+# Better LinkedIn Jobs
 
-Improves the LinkedIn jobs page by removing sponsored items and adding company ratings.
+Improves the LinkedIn jobs page by removing promoted offers and adding company ratings.
