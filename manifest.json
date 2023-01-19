@@ -1,0 +1,44 @@
+{
+    "description": "Improves the LinkedIn jobs page by removing sponsored items and adding company ratings.",
+    "manifest_version": 2,
+    "name": "Better LinkedIn Jobs",
+    "version": "1.0",
+    "homepage_url": "https://github.com/ichbinstudent/BetterLinkedInJobs",
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "BetterLinkedInJobsExtension@davidhoeglinger.de"
+        }
+    },
+    "icons": {
+        "60": "icons/60.png",
+        "128": "icons/128.png",
+        "512": "icons/512.png"
+    },
+    "permissions": [
+        "storage",
+        "https://www.kununu.com/*",
+        "https://indeed.com/*",
+        "https://www.indeed.com/*"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "*://www.linkedin.com/jobs/search*"
+            ],
+            "js": [
+                "jobssearch.js"
+            ],
+            "css": [
+                "styles.css"
+            ]
+        }
+    ],
+    "browser_action": {
+        "browser_style": true,
+        "default_title": "Configure BetterLinkedInJobs",
+        "default_popup": "options/popup.html",
+        "default_icon": {
+            "128": "icons/128.png"
+        }
+    }
+}
