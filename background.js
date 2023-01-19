@@ -4,6 +4,6 @@ chrome.runtime.onMessage.addListener(
             .then(response => json ? response.json() : response.text())
             .then(responseText => onSuccess(responseText))
         
-        return true;  // Will respond asynchronously.
+        return true;
     }
 );

@@ -1,8 +1,8 @@
 {
     "description": "Improves the LinkedIn jobs page by removing promoted offers and adding company ratings.",
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "Better LinkedIn Jobs",
-    "version": "1.1",
+    "version": "1.1.2",
     "homepage_url": "https://github.com/ichbinstudent/BetterLinkedInJobs",
     "browser_specific_settings": {
         "gecko": {
@@ -15,7 +15,9 @@
         "512": "icons/512.png"
     },
     "permissions": [
-        "storage",
+        "storage"
+    ],
+    "host_permissions": [
         "https://www.kununu.com/*",
         "https://indeed.com/*",
         "https://www.indeed.com/*"
@@ -34,12 +36,9 @@
         }
     ],
     "background": {
-        "scripts": [
-            "bg_page.js"
-        ],
-        "persistent": false
+        "service_worker": "background.js"
     },
-    "browser_action": {
+    "action": {
         "browser_style": true,
         "default_title": "Configure BetterLinkedInJobs",
         "default_popup": "options/popup.html",
