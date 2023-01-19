@@ -1,10 +1,10 @@
 console.debug("[+] BetterLinkedInJobs loaded...")
 
-let removeSponsored = false;
+let removePromoted = false;
 let showRatings = false;
 
 const removePromoted = () => {
-    if (removeSponsored === false) return;
+    if (removePromoted === false) return;
 
     new Array(...document.getElementsByClassName("jobs-search-results__list-item")).forEach((e) => {
         if (e.nodeName === 'LI') {
@@ -128,7 +128,7 @@ const getRatings = () => {
 
 async function loadSettings() {
     const storedSettings = await browser.storage.local.get();
-    removeSponsored = storedSettings.removeSponsored;
+    removePromoted = storedSettings.removePromoted;
     showRatings = storedSettings.showRatings;
 };
 
