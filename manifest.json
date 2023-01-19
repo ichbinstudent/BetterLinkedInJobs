@@ -33,6 +33,12 @@
             ]
         }
     ],
+    "background": {
+        "scripts": [
+            "bg_page.js"
+        ],
+        "persistent": false
+    },
     "browser_action": {
         "browser_style": true,
         "default_title": "Configure BetterLinkedInJobs",

@@ -3,6 +3,30 @@ console.debug("[+] BetterLinkedInJobs loaded...")
 let removePromotedActive = false;
 let showRatings = false;
 
+function getBrowserName() {
+    if (typeof chrome !== "undefined") {
+        if (typeof browser !== "undefined") {
+            return "Firefox";
+        } else {
+            return "Chrome";
+        }
+    } else {
+        return "Edge";
+    }
+}
+
+function getBrowserInstance() {
+    if (typeof chrome !== "undefined") {
+        if (typeof browser !== "undefined") {
+            return browser;
+        } else {
+            return chrome;
+        }
+    } else {
+        return chrome;
+    }
+}
+
 function removePromoted() {
     if (removePromotedActive === false) return;
 
@@ -30,12 +54,21 @@ function prepareSearchTermForIndeed(name) {
     const replaceList = [
         'DACH',
         'GmbH',
+        'Deutschland',
+        'Germany',
         'AG',
         'EMEA'
     ];
-    replaceList.forEach(r => name = name.replace(r, ''));
-    console.log(name);
-    return name;
+    const words = name.split(' ');
+    const lastWord = words[words.length - 1];
+
+    for (let i = 0; i < replaceList.length; i++) {
+        if (lastWord === replaceList[i]) {
+            words.pop();
+            break;
+        }
+    }
+    return words.join(' ');
 }
 
 const getRatings = () => {
@@ -48,12 +81,17 @@ const getRatings = () => {
                 (element) => element.nodeName === 'A',
             )[0];
 
+            if (company === undefined) return;
+
             const ratingRow = document.createElement("div");
             ratingRow.classList.add("rating-row");
 
-            fetch(`https://www.indeed.com/companies/search?q=${prepareSearchTermForIndeed(company.innerText)}`)
-                .then(response => response.text())
-                .then(r => {
+            getBrowserInstance().runtime.sendMessage(
+                {
+                    url: `https://www.indeed.com/companies/search?q=${prepareSearchTermForIndeed(company.innerText)}`,
+                    json: false
+                },
+                r => {
                     const el = document.createElement('html');
                     el.innerHTML = r;
                     let results = evaluateXPath(el, "//section/div/div[1]/div[1]/div[2]/a");
@@ -69,15 +107,11 @@ const getRatings = () => {
                         </a>
                         `;
                     }
-                })
-                .catch(reason => {
-                    console.log(reason);
                 });
 
             const getRating = (slug) => new Promise(resolve => {
-                fetch(`https://www.kununu.com/${slug}`)
-                    .then(response => response.text())
-                    .then((body) => {
+                getBrowserInstance().runtime.sendMessage({ url: `https://www.kununu.com/${slug}`, json: false },
+                    (body) => {
                         const parser = new DOMParser();
                         const dom = parser.parseFromString(body, "text/html");
                         const ratingsCard = dom.getElementById("card-profile-metrics");
@@ -98,9 +132,12 @@ const getRatings = () => {
                     });
             });
 
-            fetch(`https://www.kununu.com/middlewares/kununu-search/profiles/autocomplete?q=${company.innerText}&reorderByCountry=de`)
-                .then(response => response.json())
-                .then(async ({ data }) => {
+            getBrowserInstance().runtime.sendMessage(
+                {
+                    url: `https://www.kununu.com/middlewares/kununu-search/profiles/autocomplete?q=${company.innerText}&reorderByCountry=de`,
+                    json: true
+                },
+                async ({ data }) => {
                     if (data.profiles.length > 0) {
                         const ratingElement = await getRating(data.profiles[0].slug);
                         ratingRow.innerHTML += ratingElement;
@@ -108,9 +145,12 @@ const getRatings = () => {
                         const nameList = company.innerText.split(' ');
                         nameList.pop();
                         if (nameList.length > 0) {
-                            fetch(`https://www.kununu.com/middlewares/kununu-search/profiles/autocomplete?q=${nameList.join(' ')}&reorderByCountry=de`)
-                                .then(response => response.json())
-                                .then(async ({ data }) => {
+                            getBrowserInstance().runtime.sendMessage(
+                                {
+                                    url: `https://www.kununu.com/middlewares/kununu-search/profiles/autocomplete?q=${nameList.join(' ')}&reorderByCountry=de`,
+                                    json: true
+                                },
+                                async ({ data }) => {
                                     if (data.profiles.length > 0) {
                                         const ratingElement = await getRating(data.profiles[0].slug);
                                         ratingRow.innerHTML += ratingElement;
@@ -127,12 +167,30 @@ const getRatings = () => {
 };
 
 async function loadSettings() {
-    const storedSettings = await browser.storage.local.get();
-    removePromotedActive = storedSettings.removePromoted;
-    showRatings = storedSettings.showRatings;
+    switch (getBrowserName()) {
+        case "Firefox":
+            const storedSettings = await browser.storage.local.get();
+            removePromotedActive = storedSettings.removePromoted;
+            showRatings = storedSettings.showRatings;
+            break;
+        case "Chrome":
+            chrome.storage.local.get(["removePromoted", "showRatings"], (storedSettings) => {
+                removePromotedActive = storedSettings.removePromoted;
+                showRatings = storedSettings.showRatings;
+            });
+            break;
+    }
 };
 
-browser.storage.local.onChanged.addListener(loadSettings)
+switch (getBrowserName()) {
+    case "Firefox":
+        browser.storage.local.onChanged.addListener(loadSettings);
+        break;
+    case "Chrome":
+        chrome.storage.local.onChanged.addListener(loadSettings);
+        break;
+}
+
 loadSettings();
 removePromoted();
 getRatings();
