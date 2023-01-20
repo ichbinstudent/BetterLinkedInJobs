@@ -18,9 +18,9 @@
         "storage"
     ],
     "host_permissions": [
-        "https://www.kununu.com/*",
-        "https://indeed.com/*",
-        "https://www.indeed.com/*"
+        "*://www.kununu.com/*",
+        "*://indeed.com/*",
+        "*://www.indeed.com/*"
     ],
     "content_scripts": [
         {
@@ -36,7 +36,9 @@
         }
     ],
     "background": {
-        "service_worker": "background.js"
+        "scripts": [
+            "background.js"
+        ]
     },
     "action": {
         "browser_style": true,

@@ -1,5 +1,6 @@
 console.debug("[+] BetterLinkedInJobs loaded...")
 
+const ext_api = (typeof browser === 'object') ? browser : chrome;
 let removePromotedActive = false;
 let showRatings = false;
 
@@ -12,18 +13,6 @@ function getBrowserName() {
         }
     } else {
         return "Edge";
-    }
-}
-
-function getBrowserInstance() {
-    if (typeof chrome !== "undefined") {
-        if (typeof browser !== "undefined") {
-            return browser;
-        } else {
-            return chrome;
-        }
-    } else {
-        return chrome;
     }
 }
 
@@ -86,7 +75,7 @@ const getRatings = () => {
             const ratingRow = document.createElement("div");
             ratingRow.classList.add("rating-row");
 
-            getBrowserInstance().runtime.sendMessage(
+            ext_api.runtime.sendMessage(
                 {
                     url: `https://www.indeed.com/companies/search?q=${prepareSearchTermForIndeed(company.innerText)}`,
                     json: false
@@ -110,7 +99,7 @@ const getRatings = () => {
                 });
 
             const getRating = (slug) => new Promise(resolve => {
-                getBrowserInstance().runtime.sendMessage({ url: `https://www.kununu.com/${slug}`, json: false },
+                ext_api.runtime.sendMessage({ url: `https://www.kununu.com/${slug}`, json: false },
                     (body) => {
                         const parser = new DOMParser();
                         const dom = parser.parseFromString(body, "text/html");
@@ -132,7 +121,7 @@ const getRatings = () => {
                     });
             });
 
-            getBrowserInstance().runtime.sendMessage(
+            ext_api.runtime.sendMessage(
                 {
                     url: `https://www.kununu.com/middlewares/kununu-search/profiles/autocomplete?q=${company.innerText}&reorderByCountry=de`,
                     json: true
@@ -145,7 +134,7 @@ const getRatings = () => {
                         const nameList = company.innerText.split(' ');
                         nameList.pop();
                         if (nameList.length > 0) {
-                            getBrowserInstance().runtime.sendMessage(
+                            ext_api.runtime.sendMessage(
                                 {
                                     url: `https://www.kununu.com/middlewares/kununu-search/profiles/autocomplete?q=${nameList.join(' ')}&reorderByCountry=de`,
                                     json: true
@@ -169,12 +158,12 @@ const getRatings = () => {
 async function loadSettings() {
     switch (getBrowserName()) {
         case "Firefox":
-            const storedSettings = await browser.storage.local.get();
+            const storedSettings = await ext_api.storage.local.get();
             removePromotedActive = storedSettings.removePromoted;
             showRatings = storedSettings.showRatings;
             break;
         case "Chrome":
-            chrome.storage.local.get(["removePromoted", "showRatings"], (storedSettings) => {
+            ext_api.storage.local.get(["removePromoted", "showRatings"], (storedSettings) => {
                 removePromotedActive = storedSettings.removePromoted;
                 showRatings = storedSettings.showRatings;
             });
@@ -184,10 +173,10 @@ async function loadSettings() {
 
 switch (getBrowserName()) {
     case "Firefox":
-        browser.storage.local.onChanged.addListener(loadSettings);
+        ext_api.storage.local.onChanged.addListener(loadSettings);
         break;
     case "Chrome":
-        chrome.storage.local.onChanged.addListener(loadSettings);
+        ext_api.storage.local.onChanged.addListener(loadSettings);
         break;
 }
 
