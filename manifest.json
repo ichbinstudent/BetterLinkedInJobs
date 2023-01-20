@@ -4,11 +4,6 @@
     "name": "Better LinkedIn Jobs",
     "version": "1.1.2",
     "homepage_url": "https://github.com/ichbinstudent/BetterLinkedInJobs",
-    "browser_specific_settings": {
-        "gecko": {
-            "id": "BetterLinkedInJobsExtension@davidhoeglinger.de"
-        }
-    },
     "icons": {
         "60": "icons/60.png",
         "128": "icons/128.png",
@@ -36,9 +31,7 @@
         }
     ],
     "background": {
-        "scripts": [
-            "background.js"
-        ]
+        "service_worker": "background.js"
     },
     "action": {
         "browser_style": true,

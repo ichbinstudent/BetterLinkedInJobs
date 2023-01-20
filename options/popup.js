@@ -45,7 +45,6 @@ document.addEventListener("DOMContentLoaded", function () {
             "*://www.kununu.com/*",
             "*://indeed.com/*",
             "*://www.indeed.com/*",
-            "*://www.linkedin.com/*"
         ]
     }, function (result) {
         if (!result) {
@@ -61,7 +60,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     "*://www.kununu.com/*",
                     "*://indeed.com/*",
                     "*://www.indeed.com/*",
-                    "*://www.linkedin.com/*"
                 ]
             }
         );
