@@ -82,6 +82,7 @@ const getRatings = () => {
 
             const ratingRow = document.createElement("div");
             ratingRow.classList.add("rating-row");
+            e.children[0].children[0].style.flexDirection = "column";
 
             getBrowserInstance().runtime.sendMessage(
                 {
