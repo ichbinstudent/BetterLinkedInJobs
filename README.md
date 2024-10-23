@@ -1,6 +1,7 @@
-# Better LinkedIn Jobs
+# Ratings and More for LinkedIn Jobs
 
 Improves the LinkedIn jobs page by removing promoted offers and adding company ratings.
+Not affiliated with the LinkedIn company.
 
 ## Installation
 

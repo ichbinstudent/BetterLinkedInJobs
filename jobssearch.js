@@ -76,10 +76,7 @@ const getRatings = () => {
 
     new Array(...document.getElementsByClassName("jobs-search-results__list-item")).forEach((e) => {
         if (e.nodeName === 'LI' && !e.classList.contains("already-rated")) {
-            const company = Array.prototype.filter.call(
-                e.getElementsByClassName("job-card-container__link job-card-container__company-name"),
-                (element) => element.nodeName === 'A',
-            )[0];
+            const company = e.getElementsByClassName("job-card-container__primary-description")[0];
 
             if (company === undefined) return;
 
@@ -94,10 +91,10 @@ const getRatings = () => {
                 r => {
                     const el = document.createElement('html');
                     el.innerHTML = r;
-                    let results = evaluateXPath(el, "//section/div/div[1]/div[1]/div[2]/a");
+                    let results = evaluateXPath(el, '//*[@id="main"]/div/div[2]/ul/li[1]/div/div[1]/div[1]/div[2]/a/div');
                     if (results.length > 0) {
-                        const userRating = results[0].childNodes[0].childNodes[0].innerText;
-                        const ratingsCount = results[0].childNodes[0].childNodes[3].innerText;
+                        const userRating = results[0].childNodes[0].innerText;
+                        const ratingsCount = results[0].childNodes[3].innerText;
                         ratingRow.innerHTML += `
                         <a class="rating-col" href="${"https://www.indeed.com" + results[0].getAttribute('href')}" target="_blank">
                             <span style="text-decoration: underline;">Indeed</span>

@@ -1,12 +1,12 @@
 {
     "description": "Improves the LinkedIn jobs page by removing promoted offers and adding company ratings.",
     "manifest_version": 3,
-    "name": "Better LinkedIn Jobs",
-    "version": "1.1.2",
+    "name": "Ratings and More for LinkedIn Jobs",
+    "version": "1.1.4",
     "homepage_url": "https://github.com/ichbinstudent/BetterLinkedInJobs",
     "browser_specific_settings": {
         "gecko": {
-            "id": "BetterLinkedInJobsExtension@davidhoeglinger.de"
+            "id": "RatingsAndMoreForLinkedInJobsExtension@davidhoeglinger.de"
         }
     },
     "icons": {
@@ -40,7 +40,7 @@
     },
     "action": {
         "browser_style": true,
-        "default_title": "Configure BetterLinkedInJobs",
+        "default_title": "Configure Ratings and More for LinkedIn Jobs",
         "default_popup": "options/popup.html",
         "default_icon": {
             "128": "icons/128.png"
